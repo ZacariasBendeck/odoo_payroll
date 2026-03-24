@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:15
@@ -25,7 +23,9 @@ services:
       - ./payroll:/mnt/extra-addons/payroll
       - ./payroll_account:/mnt/extra-addons/payroll_account
       - odoo-web-data:/var/lib/odoo
-    command: odoo --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons --db_host=db --db_user=odoo --db_password=odoo
+    command:
+      odoo --addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+      --db_host=db --db_user=odoo --db_password=odoo
     restart: unless-stopped
 
 volumes:
