@@ -1,0 +1,89 @@
+/* JobPilot Custom Styles */
+
+:root {
+    --badge-bg: #e2e8f0;
+    --badge-color: #475569;
+}
+
+/* Status badges */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--badge-bg);
+    color: var(--badge-color);
+}
+
+.badge-planning { background: #dbeafe; color: #1e40af; }
+.badge-active { background: #dcfce7; color: #166534; }
+.badge-on_hold { background: #fef3c7; color: #92400e; }
+.badge-completed { background: #d1fae5; color: #065f46; }
+.badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+.badge-todo { background: #e2e8f0; color: #475569; }
+.badge-in_progress { background: #dbeafe; color: #1e40af; }
+.badge-blocked { background: #fee2e2; color: #991b1b; }
+.badge-review { background: #fef3c7; color: #92400e; }
+.badge-done { background: #d1fae5; color: #065f46; }
+
+.badge-not_started { background: #e2e8f0; color: #475569; }
+.badge-assigned { background: #dbeafe; color: #1e40af; }
+.badge-accepted { background: #e0e7ff; color: #3730a3; }
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-dismissed { background: #f1f5f9; color: #64748b; }
+
+.badge-priority-low { background: #f1f5f9; color: #64748b; }
+.badge-priority-medium { background: #dbeafe; color: #1e40af; }
+.badge-priority-high { background: #fed7aa; color: #c2410c; }
+.badge-priority-critical { background: #fee2e2; color: #991b1b; }
+
+.badge-available { background: #d1fae5; color: #065f46; }
+.badge-busy { background: #fef3c7; color: #92400e; }
+.badge-away { background: #e2e8f0; color: #475569; }
+
+/* HTMX indicator */
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator,
+.htmx-indicator.htmx-request {
+    display: block;
+}
+
+/* Card improvements */
+article > header {
+    margin-bottom: 0.5rem;
+}
+
+/* Nav active state */
+nav a.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Small button variant */
+.small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Breadcrumb styling */
+nav[aria-label="breadcrumb"] ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    gap: 0.5rem;
+}
+nav[aria-label="breadcrumb"] li:not(:last-child)::after {
+    content: ">";
+    margin-left: 0.5rem;
+    color: var(--badge-color);
+}
+
+/* Summary details */
+details summary {
+    cursor: pointer;
+    padding: 0.5rem 0;
+}

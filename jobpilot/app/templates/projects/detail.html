@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ul>
+        <li><a href="/projects">Projects</a></li>
+        <li>{{ project.name }}</li>
+    </ul>
+</nav>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>{{ project.name }}</h1>
+    <div>
+        <span class="badge badge-{{ project.status }}">{{ project.status }}</span>
+        <span class="badge badge-priority-{{ project.priority }}">{{ project.priority }}</span>
+    </div>
+</div>
+
+{% if project.description %}
+<p>{{ project.description }}</p>
+{% endif %}
+
+{% if project.deadline %}
+<p><small>Deadline: {{ project.deadline }}</small></p>
+{% endif %}
+
+<div class="grid">
+    <!-- AI Analysis -->
+    <article>
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>AI Analysis</strong>
+                <button class="outline small"
+                    hx-post="/api/ai/plan/{{ project.id }}"
+                    hx-target="#ai-analysis"
+                    hx-indicator="#analysis-spinner">
+                    Analyze
+                </button>
+            </div>
+        </header>
+        <div id="ai-analysis">
+            {% if project.ai_next_steps %}
+            <p><strong>Next Steps:</strong></p>
+            <p>{{ project.ai_next_steps }}</p>
+            {% else %}
+            <p>Click "Analyze" to get AI-powered insights.</p>
+            {% endif %}
+        </div>
+        <div id="analysis-spinner" class="htmx-indicator"><progress></progress></div>
+    </article>
+
+    <!-- AI Delegation -->
+    <article>
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>Delegation Suggestions</strong>
+                <button class="outline small"
+                    hx-post="/api/ai/delegate/{{ project.id }}"
+                    hx-target="#ai-delegation"
+                    hx-indicator="#delegation-spinner">
+                    Suggest
+                </button>
+            </div>
+        </header>
+        <div id="ai-delegation">
+            <p>Click "Suggest" to get AI delegation recommendations.</p>
+        </div>
+        <div id="delegation-spinner" class="htmx-indicator"><progress></progress></div>
+    </article>
+</div>
+
+<!-- Goals -->
+<article>
+    <header><strong>Goals</strong></header>
+    {% if project.goals %}
+    {% for goal in project.goals %}
+    <details>
+        <summary>
+            <strong>{{ goal.title }}</strong>
+            <span class="badge badge-{{ goal.status }}">{{ goal.status }}</span>
+        </summary>
+        <p>{{ goal.description or '' }}</p>
+        {% if goal.milestones %}
+        <ul>
+            {% for m in goal.milestones %}
+            <li>{{ m.title }} - <span class="badge badge-{{ m.status }}">{{ m.status }}</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </details>
+    {% endfor %}
+    {% else %}
+    <p>No goals defined yet.</p>
+    {% endif %}
+</article>
+
+<!-- Tasks -->
+<article>
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Tasks</strong>
+            <button class="outline small" onclick="document.getElementById('new-task-dialog').showModal()">+ Add Task</button>
+        </div>
+    </header>
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Assigned To</th>
+                <th>Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td><span class="badge badge-{{ task.status }}">{{ task.status }}</span></td>
+                <td>{{ task.priority }}</td>
+                <td>
+                    {% for a in task.assignments %}
+                    {{ a.member.name }}{% if not loop.last %}, {% endif %}
+                    {% else %}
+                    <em>Unassigned</em>
+                    {% endfor %}
+                </td>
+                <td>{{ task.due_date or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No tasks yet.</p>
+    {% endif %}
+</article>
+
+<!-- New Task Dialog -->
+<dialog id="new-task-dialog">
+    <article>
+        <header>
+            <button aria-label="Close" rel="prev" onclick="this.closest('dialog').close()"></button>
+            <h3>Add Task</h3>
+        </header>
+        <form id="new-task-form">
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+            <label>
+                Title
+                <input type="text" name="title" required>
+            </label>
+            <label>
+                Description
+                <textarea name="description" rows="2"></textarea>
+            </label>
+            <div class="grid">
+                <label>
+                    Priority
+                    <select name="priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </label>
+                <label>
+                    Due Date
+                    <input type="date" name="due_date">
+                </label>
+            </div>
+            <label>
+                Assign To
+                <select name="assign_to">
+                    <option value="">Unassigned</option>
+                    {% for m in members %}
+                    <option value="{{ m.id }}">{{ m.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <footer>
+                <button type="submit">Create Task</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+
+<script>
+document.getElementById('new-task-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = {
+        project_id: parseInt(formData.get('project_id')),
+        title: formData.get('title'),
+    };
+    if (formData.get('description')) data.description = formData.get('description');
+    if (formData.get('priority')) data.priority = formData.get('priority');
+    if (formData.get('due_date')) data.due_date = formData.get('due_date');
+
+    const resp = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    if (resp.ok) {
+        const task = await resp.json();
+        const assignTo = formData.get('assign_to');
+        if (assignTo) {
+            await fetch(`/api/tasks/${task.id}/assign`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({member_id: parseInt(assignTo)})
+            });
+        }
+        window.location.reload();
+    }
+});
+</script>
+{% endblock %}

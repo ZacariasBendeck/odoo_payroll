@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Inbox</h1>
+    <div>
+        <button class="outline"
+            hx-post="/api/email/sync"
+            hx-headers='{"Content-Type": "application/json"}'
+            hx-vals='{"max_emails": 20}'
+            hx-target="#sync-result"
+            hx-indicator="#sync-spinner">
+            Sync Emails
+        </button>
+    </div>
+</div>
+
+<div id="sync-result"></div>
+<div id="sync-spinner" class="htmx-indicator"><progress></progress></div>
+
+<!-- Extract from text -->
+<article>
+    <header><strong>Extract Action Items from Text</strong></header>
+    <form id="extract-form">
+        <textarea name="text" rows="4" placeholder="Paste an email, message, or any text here..."></textarea>
+        <button type="submit">Extract Actions</button>
+    </form>
+    <div id="extract-result"></div>
+</article>
+
+<!-- Action Items -->
+<article>
+    <header><strong>Action Items</strong></header>
+    {% if action_items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Action</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in action_items %}
+            <tr>
+                <td><span class="badge">{{ item.source }}</span></td>
+                <td>{{ item.extracted_action }}</td>
+                <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
+                <td><small>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</small></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No action items yet. Sync your emails or paste text above to extract action items.</p>
+    {% endif %}
+</article>
+
+<script>
+document.getElementById('extract-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = e.target.querySelector('textarea').value;
+    if (!text.trim()) return;
+
+    const resp = await fetch('/api/ai/extract-actions', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({text: text, source: 'manual'})
+    });
+
+    const result = document.getElementById('extract-result');
+    if (resp.ok) {
+        const data = await resp.json();
+        if (data.actions && data.actions.length > 0) {
+            let html = '<h4>Extracted Actions:</h4><ul>';
+            data.actions.forEach(a => {
+                html += `<li><strong>${a.action}</strong> (${a.priority})`;
+                if (a.suggested_project) html += ` - Project: ${a.suggested_project}`;
+                html += '</li>';
+            });
+            html += '</ul>';
+            result.innerHTML = html;
+        } else {
+            result.innerHTML = '<p>No action items found in the text.</p>';
+        }
+    } else {
+        result.innerHTML = '<p>Failed to extract actions. Make sure your AI API key is configured.</p>';
+    }
+});
+</script>
+{% endblock %}

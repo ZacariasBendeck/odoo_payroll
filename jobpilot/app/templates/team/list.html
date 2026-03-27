@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Team{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Team</h1>
+    <button onclick="document.getElementById('new-member-dialog').showModal()">+ Add Member</button>
+</div>
+
+{% if members_data %}
+<div class="grid">
+    {% for item in members_data %}
+    {% set m = item.member %}
+    <article>
+        <header>
+            <strong>{{ m.name }}</strong>
+            <br>
+            <small>{{ m.role or 'No role set' }}</small>
+        </header>
+        {% if m.email %}<p><small>{{ m.email }}</small></p>{% endif %}
+        {% if m.phone %}<p><small>Phone: {{ m.phone }}</small></p>{% endif %}
+        {% if m.skills %}<p><small>Skills: {{ m.skills }}</small></p>{% endif %}
+        <p>
+            <span class="badge badge-{{ m.availability }}">{{ m.availability }}</span>
+            <span>{{ item.active_tasks }} active tasks</span>
+        </p>
+        <footer>
+            <a href="/api/team/{{ m.id }}/workload" role="button" class="outline small">View Workload</a>
+        </footer>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<article>
+    <p>No team members yet. Add your first team member to start delegating tasks!</p>
+</article>
+{% endif %}
+
+<!-- New Member Dialog -->
+<dialog id="new-member-dialog">
+    <article>
+        <header>
+            <button aria-label="Close" rel="prev" onclick="this.closest('dialog').close()"></button>
+            <h3>Add Team Member</h3>
+        </header>
+        <form id="new-member-form">
+            <label>
+                Name
+                <input type="text" name="name" required>
+            </label>
+            <label>
+                Email
+                <input type="email" name="email">
+            </label>
+            <label>
+                Phone
+                <input type="tel" name="phone">
+            </label>
+            <label>
+                Role
+                <input type="text" name="role" placeholder="e.g. Developer, Designer, PM">
+            </label>
+            <label>
+                Skills
+                <input type="text" name="skills" placeholder="e.g. Python, React, Project Management">
+            </label>
+            <footer>
+                <button type="submit">Add Member</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+
+<script>
+document.getElementById('new-member-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((v, k) => { if (v) data[k] = v; });
+
+    const resp = await fetch('/api/team', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    if (resp.ok) window.location.reload();
+});
+</script>
+{% endblock %}

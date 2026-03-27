@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="grid">
+    <article>
+        <header>Projects</header>
+        <h2>{{ stats.total_projects }}</h2>
+        <small>{{ stats.active_projects }} active</small>
+    </article>
+    <article>
+        <header>Tasks</header>
+        <h2>{{ stats.total_tasks }}</h2>
+        <small>{{ stats.pending_tasks }} pending / {{ stats.in_progress_tasks }} in progress</small>
+    </article>
+    <article>
+        <header>Team</header>
+        <h2>{{ stats.team_size }}</h2>
+        <small>members</small>
+    </article>
+    <article>
+        <header>Completed</header>
+        <h2>{{ stats.completed_tasks }}</h2>
+        <small>tasks done</small>
+    </article>
+</div>
+
+<!-- AI Summary -->
+<article>
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>AI Summary</strong>
+            <button class="outline" hx-get="/api/ai/dashboard-summary" hx-target="#ai-summary" hx-indicator="#ai-spinner">
+                Generate Summary
+            </button>
+        </div>
+    </header>
+    <div id="ai-summary">
+        <p>Click "Generate Summary" to get an AI-powered overview of your projects.</p>
+    </div>
+    <div id="ai-spinner" class="htmx-indicator">
+        <progress></progress>
+    </div>
+</article>
+
+<!-- Recent Tasks -->
+<article>
+    <header><strong>Recent Tasks</strong></header>
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.project.name if task.project else '-' }}</td>
+                <td><span class="badge badge-{{ task.status }}">{{ task.status }}</span></td>
+                <td>{{ task.priority }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No tasks yet. <a href="/projects">Create a project</a> to get started.</p>
+    {% endif %}
+</article>
+
+<!-- Quick Actions -->
+<div class="grid">
+    <article>
+        <header><strong>Quick Actions</strong></header>
+        <a href="/projects" role="button">View Projects</a>
+        <a href="/team" role="button" class="outline" style="margin-left: 0.5rem;">Manage Team</a>
+    </article>
+</div>
+{% endblock %}

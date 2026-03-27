@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Projects</h1>
+    <button onclick="document.getElementById('new-project-dialog').showModal()">+ New Project</button>
+</div>
+
+<!-- Filter -->
+<nav>
+    <ul>
+        <li><a href="/projects" {% if not current_status %}class="active"{% endif %}>All</a></li>
+        <li><a href="/projects?status=planning" {% if current_status == 'planning' %}class="active"{% endif %}>Planning</a></li>
+        <li><a href="/projects?status=active" {% if current_status == 'active' %}class="active"{% endif %}>Active</a></li>
+        <li><a href="/projects?status=on_hold" {% if current_status == 'on_hold' %}class="active"{% endif %}>On Hold</a></li>
+        <li><a href="/projects?status=completed" {% if current_status == 'completed' %}class="active"{% endif %}>Completed</a></li>
+    </ul>
+</nav>
+
+{% if projects %}
+<div class="grid">
+    {% for project in projects %}
+    <article>
+        <header>
+            <a href="/projects/{{ project.id }}"><strong>{{ project.name }}</strong></a>
+            <br>
+            <small>
+                <span class="badge badge-{{ project.status }}">{{ project.status }}</span>
+                <span class="badge badge-priority-{{ project.priority }}">{{ project.priority }}</span>
+            </small>
+        </header>
+        <p>{{ project.description or 'No description' }}</p>
+        {% if project.deadline %}
+        <small>Deadline: {{ project.deadline }}</small>
+        {% endif %}
+        <footer>
+            <a href="/projects/{{ project.id }}" role="button" class="outline small">View Details</a>
+        </footer>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<article>
+    <p>No projects found. Create one to get started!</p>
+</article>
+{% endif %}
+
+<!-- New Project Dialog -->
+<dialog id="new-project-dialog">
+    <article>
+        <header>
+            <button aria-label="Close" rel="prev" onclick="this.closest('dialog').close()"></button>
+            <h3>New Project</h3>
+        </header>
+        <form hx-post="/api/projects" hx-target="body" hx-headers='{"Content-Type": "application/json"}'>
+            <label>
+                Name
+                <input type="text" name="name" required>
+            </label>
+            <label>
+                Description
+                <textarea name="description" rows="3"></textarea>
+            </label>
+            <label>
+                Priority
+                <select name="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </label>
+            <label>
+                Deadline
+                <input type="date" name="deadline">
+            </label>
+            <footer>
+                <button type="submit">Create Project</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+
+<script>
+document.querySelectorAll('form[hx-post="/api/projects"]').forEach(form => {
+    form.addEventListener('htmx:configRequest', (e) => {
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((v, k) => { if (v) data[k] = v; });
+        e.detail.headers['Content-Type'] = 'application/json';
+        e.detail.body = JSON.stringify(data);
+    });
+    form.addEventListener('htmx:afterRequest', () => {
+        window.location.href = '/projects';
+    });
+});
+</script>
+{% endblock %}
