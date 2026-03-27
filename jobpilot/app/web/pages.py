@@ -30,8 +30,9 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     }
 
     return templates.TemplateResponse(
-        "dashboard.html",
-        {"request": request, "projects": projects, "stats": stats, "tasks": tasks[:10]},
+        name="dashboard.html",
+        request=request,
+        context={"projects": projects, "stats": stats, "tasks": tasks[:10]},
     )
 
 
@@ -43,8 +44,9 @@ def projects_page(
 ):
     projects = project_service.list_projects(db, status=status)
     return templates.TemplateResponse(
-        "projects/list.html",
-        {"request": request, "projects": projects, "current_status": status},
+        name="projects/list.html",
+        request=request,
+        context={"projects": projects, "current_status": status},
     )
 
 
@@ -53,13 +55,16 @@ def project_detail(request: Request, project_id: int, db: Session = Depends(get_
     project = project_service.get_project(db, project_id)
     if not project:
         return templates.TemplateResponse(
-            "dashboard.html", {"request": request, "error": "Project not found"}
+            name="dashboard.html",
+            request=request,
+            context={"error": "Project not found"},
         )
     tasks = project_service.list_tasks(db, project_id=project_id)
     members = team_service.list_members(db)
     return templates.TemplateResponse(
-        "projects/detail.html",
-        {"request": request, "project": project, "tasks": tasks, "members": members},
+        name="projects/detail.html",
+        request=request,
+        context={"project": project, "tasks": tasks, "members": members},
     )
 
 
@@ -75,7 +80,9 @@ def team_page(request: Request, db: Session = Depends(get_db)):
             }
         )
     return templates.TemplateResponse(
-        "team/list.html", {"request": request, "members_data": members_data}
+        name="team/list.html",
+        request=request,
+        context={"members_data": members_data},
     )
 
 
@@ -87,5 +94,7 @@ def inbox_page(request: Request, db: Session = Depends(get_db)):
         db.query(ActionItem).order_by(ActionItem.created_at.desc()).limit(50).all()
     )
     return templates.TemplateResponse(
-        "inbox.html", {"request": request, "action_items": items}
+        name="inbox.html",
+        request=request,
+        context={"action_items": items},
     )
