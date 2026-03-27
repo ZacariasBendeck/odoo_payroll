@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -5,8 +7,10 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services import project_service, team_service
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 router = APIRouter(tags=["pages"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 @router.get("/")
