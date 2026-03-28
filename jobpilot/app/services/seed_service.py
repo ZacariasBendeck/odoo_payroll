@@ -16,7 +16,7 @@ from app.models.team import TaskAssignment, TeamMember
 
 logger = logging.getLogger(__name__)
 
-DATA_FILE = Path(__file__).resolve().parent.parent / "data.json"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data.json"
 
 
 def load_seed_data(db: Session) -> None:
