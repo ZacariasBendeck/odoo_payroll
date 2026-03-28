@@ -1,4 +1,152 @@
 {
-  "team": [],
-  "projects": []
+  "team": [
+    {
+      "name": "Zacarias Bendeck",
+      "email": "zbendeck@gmail.com",
+      "role": "Owner / Director",
+      "skills": "Finance, Retail Analytics, Project Management",
+      "availability": "available"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Finanzas Personales — Estado Financiero Consolidado",
+      "description": "Organizar, actualizar y profesionalizar los estados financieros personales, consolidando información de múltiples fuentes (archivos históricos, correos de Gmail, estados de cuenta bancarios). Patrimonio neto actual: ~$3,074,478 USD. Ingresos pasivos: ~$122,978/año ($10,248/mes).",
+      "status": "active",
+      "priority": "high",
+      "notes": "Archivo principal: Estado Financiero ZB - Sep 2025.xlsx (7 hojas, 30 fórmulas). Índice de correos: Estados de Cuenta Gmail - Mar 2026.xlsx. 6 PDFs de estados de cuenta descargados en Estados de Cuenta/.",
+      "goals": [
+        {
+          "title": "Análisis del archivo histórico existente",
+          "description": "Revisión del archivo Estados Financieros ZB al 5 de enero de Septiembre 2023.xlsx con 13 hojas, balances desde 2013 hasta Sep 2025.",
+          "status": "completed"
+        },
+        {
+          "title": "Creación de nuevo estado financiero profesional",
+          "description": "Estado Financiero ZB - Sep 2025.xlsx con 7 hojas: Resumen Ejecutivo, Cash & Equivalents, Inversiones, Real Estate, Préstamos, Activos Personales, Tarjetas de Crédito. Fórmulas dinámicas con formato financiero estándar.",
+          "status": "completed"
+        },
+        {
+          "title": "Búsqueda y descarga de estados de cuenta desde Gmail",
+          "description": "6 PDFs descargados: AFP Atlántida Feb 2026, Ficohsa VISA Infinite (3 estados), Ficohsa VISA Signature (2 estados). Índice creado en Estados de Cuenta Gmail - Mar 2026.xlsx.",
+          "status": "completed"
+        },
+        {
+          "title": "Actualización del estado financiero con datos reales",
+          "description": "AFP Atlántida actualizado $181,669 → $188,467.13. Cash total: $1,659,705 → $1,666,504. Nueva sección pasivos: Tarjetas de crédito Ficohsa $1,189 USD.",
+          "status": "completed"
+        }
+      ],
+      "tasks": [
+        {
+          "title": "Actualizar saldos de cuentas Ficohsa (ahorros, CDs, AFPs)",
+          "description": "Los valores actuales son de Nov 2024, necesitan actualización con estados más recientes.",
+          "status": "todo",
+          "priority": "high",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Actualizar valores de Charles Schwab e Interactive Brokers",
+          "description": "Obtener saldos actualizados de las cuentas de inversión en brokerages internacionales.",
+          "status": "todo",
+          "priority": "high",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Completar hoja LF Cashflow (proyección de retiro 2025-2065)",
+          "description": "La hoja de proyección de retiro está vacía. Crear modelo de cashflow a 40 años.",
+          "status": "todo",
+          "priority": "medium",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Corregir Apto Ecoviviendas 311 en Real Estate",
+          "description": "La propiedad Apto Ecoviviendas 311 tiene valor $0 en la hoja de Real Estate. Necesita valor correcto.",
+          "status": "todo",
+          "priority": "medium",
+          "assigned_to": ["Zacarias Bendeck"]
+        }
+      ]
+    },
+    {
+      "name": "Sistema de Reportes e Inventario RICS — Zapatos de Dama",
+      "description": "Construir herramientas de análisis de inventario, reportes de ventas y planificación de compras (OTB) para categorías de zapatos de dama (556-599) de cadena de tiendas retail en Honduras. 22+ tiendas, 4 proveedores principales (KNIN, KINT, KBAO, KHAN). Inventario: 156,249 unidades (L33.9M). Ventas YTD 2026: L14.9M (+89% vs 2025). Stack: Python + RICS/MS Access + HTML dashboards + React.",
+      "status": "active",
+      "priority": "high",
+      "notes": "Sistema fuente: RICS Retail con bases MS Access (.MDB), 64 archivos. Base más crítica: RITRNSSV.MDB (2.0GB, transacciones Feb 2023 - Feb 2026). 37 scripts Python en Reportes/. Módulo base: rics_reportes.py. Marcas: Too Taboo, Kisses, Reve Doux, Flex Fit, Addicted, Bottero, Joia. 6 macro-departamentos: FORMAL, CASUAL, FIESTA, SANDALIAS, BOOTS, COMFORT.",
+      "goals": [
+        {
+          "title": "Fase 1 — Infraestructura de Reportes",
+          "description": "Scripts Python, 33 dashboards HTML interactivos, 23 reportes Excel, dashboard React con 7 tabs, Hub central (Hub_RICS.html), catálogos y herramientas (SKU_Atributos_Ext.xlsx), presupuestos de compra y modelos OTB.",
+          "status": "completed"
+        },
+        {
+          "title": "Fase 2 — Migración a Google Drive",
+          "description": "Reorganización de carpetas completada. Falta subir a Drive y configurar conector para trabajo en equipo.",
+          "status": "in_progress"
+        },
+        {
+          "title": "Fase 3 — Interacción con BD para Pedidos",
+          "description": "Generación automatizada de órdenes de compra, presupuestos dinámicos basados en tendencias, sistema de reorden por tienda/talla.",
+          "status": "not_started"
+        },
+        {
+          "title": "Fase 4 — Open-to-Buy Plan Completo",
+          "description": "Planificación mensual de compras por departamento, integración con RIOTB.MDB, proyecciones estacionales.",
+          "status": "not_started"
+        }
+      ],
+      "tasks": [
+        {
+          "title": "Subir estructura de carpetas a Google Drive",
+          "description": "Subir: Bases_de_Datos/ (70 archivos), Reportes/Dashboards/ (34 archivos), Reportes/Excel/ (23 archivos), Reportes/Cache/ (6 JSON), Catalogos/ (7 archivos), Documentacion/ (4 archivos), fotos/ (1,949 JPGs).",
+          "status": "todo",
+          "priority": "high",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Configurar conector Google Drive para equipo",
+          "description": "Configurar acceso compartido para trabajo colaborativo en los reportes y dashboards.",
+          "status": "todo",
+          "priority": "high",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Desarrollar generación automatizada de órdenes de compra",
+          "description": "Fase 3: Scripts para generar POs automáticamente basados en niveles de inventario y tendencias de venta.",
+          "status": "todo",
+          "priority": "medium",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Crear presupuestos dinámicos basados en tendencias",
+          "description": "Fase 3: Modelos de presupuesto que se ajustan automáticamente según datos de ventas recientes.",
+          "status": "todo",
+          "priority": "medium",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Implementar sistema de reorden por tienda/talla",
+          "description": "Fase 3: Sistema que identifica SKUs que necesitan reorden por tienda y talla específica.",
+          "status": "todo",
+          "priority": "medium",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Desarrollar planificación mensual OTB por departamento",
+          "description": "Fase 4: Open-to-Buy mensual por cada uno de los 6 macro-departamentos, integrado con RIOTB.MDB.",
+          "status": "todo",
+          "priority": "low",
+          "assigned_to": ["Zacarias Bendeck"]
+        },
+        {
+          "title": "Crear proyecciones estacionales",
+          "description": "Fase 4: Modelos de proyección basados en patrones estacionales históricos para planificación de compras.",
+          "status": "todo",
+          "priority": "low",
+          "assigned_to": ["Zacarias Bendeck"]
+        }
+      ]
+    }
+  ]
 }
