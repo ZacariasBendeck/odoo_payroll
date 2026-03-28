@@ -12,6 +12,14 @@ BASE_DIR = Path(__file__).resolve().parent
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_tables()
+    # Sync data.json into the database
+    from app.database import SessionLocal
+    from app.services.seed_service import load_seed_data
+    db = SessionLocal()
+    try:
+        load_seed_data(db)
+    finally:
+        db.close()
     yield
 
 
